@@ -2,16 +2,21 @@ import re
 import sys
 from pathlib import Path
 from setuptools import Extension, find_packages, setup
+import os
 
 # Get the version number:
 with open('hotcent/__init__.py') as f:
     version = re.search("__version__ = '(.*)'", f.read()).group(1)
 
+compile_args = ['-O3']
+if not os.environ.get('CI'):
+    compile_args.append('-march=native')
+
 extensions = [
     Extension('_hotcent',
               sources=['hotcent/extensions.c'],
               language='c',
-              extra_compile_args=['-O3', '-march=native'],
+              extra_compile_args=compile_args,
               ),
 ]
 
